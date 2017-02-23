@@ -6,24 +6,7 @@ use MicroCMS\Domain\Author;
 
 class AuthorDAO extends DAO
 {
-    /**
-     * Return a list of all Authors, sorted by date (most recent first).
-     *
-     * @return array A list of all Authors.
-     */
-    public function findAll() {
-        $sql = "select * from author order by auth_id desc";
-        $result = $this->getDb()->fetchAll($sql);
-
-        // Convert query result to an array of domain objects
-        $authors = array();
-        foreach ($result as $row) {
-            $authorId = $row['auth_id'];
-            $authors[$authorId] = $this->buildDomainObject($row);
-        }
-        return $authors;
-    }
-
+    
     /**
      * Returns an author matching the supplied id.
      *

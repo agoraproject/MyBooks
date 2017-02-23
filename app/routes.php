@@ -6,9 +6,9 @@ $app->get('/', function () use ($app) {
     return $app['twig']->render('index.html.twig', array('books' => $books));
 })->bind('home');
 
-// Article details with books
-$app->get('/author/{id}', function ($id) use ($app) {
-    $author = $app['dao.author']->find($id);
-    $books = $app['dao.book']->findAllByAuthor($id);
-    return $app['twig']->render('author.html.twig', array('author' => $author, 'books' => $books));
-})->bind('author');
+// Book details with author
+$app->get('/book/{id}', function ($id) use ($app) {
+    
+    $book = $app['dao.book']->find($id);
+    return $app['twig']->render('book.html.twig', array('book' => $book));
+})->bind('book');

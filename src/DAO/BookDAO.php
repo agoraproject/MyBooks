@@ -21,7 +21,7 @@ class BookDAO extends DAO
      * @return array A list of all Authors.
      */
     public function findAll() {
-        $sql = "select * from book order by book_title";
+        $sql = "select * from book order by book_id DESC";
         $result = $this->getDb()->fetchAll($sql);
 
         // Convert query result to an array of domain objects
@@ -34,31 +34,20 @@ class BookDAO extends DAO
     }
 
     /**
-     * Return a list of all books for an author, sorted by book_title.
+     * Returns a book matching the supplied id.
      *
-     * @param integer $authorId The author id.
+     * @param integer $id The book id.
      *
-     * @return array A list of all books for the author.
+     * @return \MicroCMS\Domain\Book|throws an exception if no matching author is found
      */
-    public function findAllByauthor($authorId) {
-        // The associated author is retrieved only once
-        $author = $this->authorDAO->find($authorId);
+    public function find($id) {
+        $sql = "select * from book where book_id=?";
+        $row = $this->getDb()->fetchAssoc($sql, array($id));
 
-        // art_id is not selected by the SQL query
-        // The author won't be retrieved during domain objet construction
-        $sql = "select book_id, book_title, book_isbn, book_summary from book where auth_id=? order by book_id";
-        $result = $this->getDb()->fetchAll($sql, array($authorId));
-
-        // Convert query result to an array of domain objects
-        $books = array();
-        foreach ($result as $row) {
-            $bookId = $row['book_id'];
-            $book = $this->buildDomainObject($row);
-            // The associated author is defined for the constructed book
-            $book->setAuthor($author);
-            $books[$comId] = $book;
-        }
-        return $books;
+        if ($row)
+            return $this->buildDomainObject($row);
+        else
+            throw new \Exception("No book matching id " . $id);
     }
 
     /**
@@ -73,11 +62,10 @@ class BookDAO extends DAO
         $book->setTitle($row['book_title']);
         $book->setIsbn($row['book_isbn']);
         $book->setSummary($row['book_summary']);
-        //$book->setAuthor($row['auth_id']);
 
         if (array_key_exists('auth_id', $row)) {
             // Find and set the associated author
-            $authorId = $row['book_id'];
+            $authorId = $row['auth_id'];
             $author = $this->authorDAO->find($authorId);
             $book->setAuthor($author);
         }

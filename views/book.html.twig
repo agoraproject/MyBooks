@@ -6,12 +6,12 @@
 <p>
     <h2>{{ book.title }}</h2>
     <ul>
-     {% for author in author %}
-        <li>{{ author.firstName }} {{ author.lastName }}</li>
-        <li>ISBN : {{ author.isbn }}</li>
+     {% if book.author%}
+        <li>Auteur : {{ book.author.firstName }} {{ book.author.lastName }}</li>
+        <li>ISBN : {{ book.isbn }}</li>
     {% else %}
         <li>No author recorded.</li>
-    {% endfor %}
+    {% endif %}
     </ul>
     <p>
         {{ book.summary }}
